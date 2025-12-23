@@ -21,8 +21,8 @@ import { LinkPreset } from "./types/config";
 const SITE_LANG = "zh_CN"; // 语言代码，例如：'en', 'zh_CN', 'ja' 等。
 const SITE_TIMEZONE = 8; //设置你的网站时区 from -12 to 12 default in UTC+8
 export const siteConfig: SiteConfig = {
-	title: "Mizuki",
-	subtitle: "One demo website",
+	title: "素鱼",
+	subtitle: "一个简单的博客",
 	siteURL: "https://suyukk-github-io.vercel.app//", // 请替换为你的站点URL，以斜杠结尾
 	siteStartDate: "2025-12-23", // 站点开始运行日期，用于站点统计组件计算运行天数
 
@@ -31,8 +31,8 @@ export const siteConfig: SiteConfig = {
 	lang: SITE_LANG,
 
 	themeColor: {
-		hue: 230, // 主题色的默认色相，范围从 0 到 360。例如：红色：0，青色：200，蓝绿色：250，粉色：345
-		fixed: false, // 对访问者隐藏主题色选择器
+		hue: 30, // 主题色的默认色相，范围从 0 到 360。例如：红色：0，青色：200，蓝绿色：250，粉色：345
+		fixed: true, // 对访问者隐藏主题色选择器
 	},
 
 	// 特色页面开关配置(关闭不在使用的页面有助于提升SEO,关闭后直接在顶部导航删除对应的页面就行)
@@ -50,7 +50,7 @@ export const siteConfig: SiteConfig = {
 	// 顶栏标题配置
 	navbarTitle: {
 		// 顶栏标题文本
-		text: "suyukk",
+		text: "素鱼",
 		// 顶栏标题图标路径，默认使用 public/assets/home/home.png
 		icon: "assets/home/home.png",
 	},
@@ -91,32 +91,24 @@ export const siteConfig: SiteConfig = {
 	},
 
 	banner: {
-		// 支持单张图片或图片数组，当数组长度 > 1 时自动启用轮播
+		// 仅保留一张横幅图片，禁用轮播
 		src: {
+			// 桌面端：只显示第一张图片
 			desktop: [
 				"/assets/desktop-banner/1.webp",
-				"/assets/desktop-banner/2.webp",
-				"/assets/desktop-banner/3.webp",
-				"/assets/desktop-banner/4.webp",
-				"/assets/desktop-banner/5.webp",
-				"/assets/desktop-banner/6.webp",
-			], // 桌面横幅图片
+			],
+			// 移动端：只显示第一张图片
 			mobile: [
 				"/assets/mobile-banner/1.webp",
-				"/assets/mobile-banner/2.webp",
-				"/assets/mobile-banner/3.webp",
-				"/assets/mobile-banner/4.webp",
-				"/assets/mobile-banner/5.webp",
-				"/assets/mobile-banner/6.webp",
-			], // 移动横幅图片
-		}, // 使用本地横幅图片
+			],
+		},
 
 		position: "center", // 等同于 object-position，仅支持 'top', 'center', 'bottom'。默认为 'center'
 
 		carousel: {
-			enable: true, // 为 true 时：为多张图片启用轮播。为 false 时：从数组中随机显示一张图片
-
-			interval: 1.5, // 轮播间隔时间（秒）
+			// 禁用轮播，只显示固定的背景图片
+			enable: false,
+			interval: 1.5, // 不使用轮播，此参数无效
 		},
 
 		waves: {
@@ -135,15 +127,12 @@ export const siteConfig: SiteConfig = {
 		// 请自行搭建API
 
 		homeText: {
-			enable: true, // 在主页显示自定义文本
-			title: "美しいミズキ", // 主页横幅主标题
+			// 启用主页横幅文字显示，但通过CSS/JS实现滚动隐藏效果
+			enable: true,
+			title: "欢迎来到素鱼的博客", // 主页横幅主标题
 
 			subtitle: [
-				"特別なことはないけど、君がいると十分です",
-				"今でもあなたは私の光",
-				"君ってさ、知らないうちに私の毎日になってたよ",
-				"君と話すと、なんか毎日がちょっと楽しくなるんだ",
-				"今日はなんでもない日。でも、ちょっとだけいい日",
+				"前天我遇见了小兔，昨天遇见了小鹿，今天则遇见了你"
 			],
 			typewriter: {
 				enable: true, // 启用副标题打字机效果
@@ -205,28 +194,22 @@ export const siteConfig: SiteConfig = {
 	showLastModified: true, // 控制“上次编辑”卡片显示的开关
 };
 export const fullscreenWallpaperConfig: FullscreenWallpaperConfig = {
+	// 仅保留一张图片配置，禁用轮播
 	src: {
+		// 桌面端：只保留第一张图片
 		desktop: [
 			"/assets/desktop-banner/1.webp",
-			"/assets/desktop-banner/2.webp",
-			"/assets/desktop-banner/3.webp",
-			"/assets/desktop-banner/4.webp",
-			"/assets/desktop-banner/5.webp",
-			"/assets/desktop-banner/6.webp",
-		], // 桌面横幅图片
+		],
+		// 移动端：只保留第一张图片
 		mobile: [
 			"/assets/mobile-banner/1.webp",
-			"/assets/mobile-banner/2.webp",
-			"/assets/mobile-banner/3.webp",
-			"/assets/mobile-banner/4.webp",
-			"/assets/mobile-banner/5.webp",
-			"/assets/mobile-banner/6.webp",
-		], // 移动横幅图片
-	}, // 使用本地横幅图片
+		],
+	},
 	position: "center", // 壁纸位置，等同于 object-position
 	carousel: {
-		enable: true, // 启用轮播
-		interval: 5, // 轮播间隔时间（秒）
+		// 轮播已禁用，只显示固定的背景图片
+		enable: false,
+		interval: 5, // 不使用轮播，此参数无效
 	},
 	zIndex: -1, // 层级，确保壁纸在背景层
 	opacity: 0.8, // 壁纸透明度
