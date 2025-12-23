@@ -647,54 +647,7 @@ const transparentClass = shouldEnableTransparency
         </div>
     )}
     
-    <!-- 滚动时隐藏横幅文字的脚本 -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // 获取横幅文字元素
-            const bannerTextOverlay = document.querySelector('.banner-text-overlay');
-            
-            if (!bannerTextOverlay) return;
-            
-            let scrollTimeout;
-            
-            // 监听滚动事件
-            window.addEventListener('scroll', () => {
-                // 清除之前的定时器
-                clearTimeout(scrollTimeout);
-                
-                // 添加滚动中类，减少动画
-                bannerTextOverlay.classList.add('scrolling');
-                
-                // 设置定时器，在滚动停止后隐藏横幅文字
-                scrollTimeout = setTimeout(() => {
-                    // 检查滚动位置，如果滚动超过一定距离则隐藏
-                    if (window.scrollY > 100) {  // 恢复到100px触发阈值
-                        bannerTextOverlay.style.opacity = '0';
-                        bannerTextOverlay.style.visibility = 'hidden';
-                        bannerTextOverlay.style.transform = 'translateY(-40px) scale(0.95)';  // 保留加强的隐藏效果
-                        bannerTextOverlay.style.filter = 'blur(2px)';  // 保留模糊效果
-                    }
-                    
-                    // 移除滚动中类
-                    bannerTextOverlay.classList.remove('scrolling');
-                }, 100);
-            });
-            
-            // 监听页面滚动，当滚动到顶部时重新显示横幅文字
-            let lastScrollY = window.scrollY;
-            
-            window.addEventListener('scroll', () => {
-                if (window.scrollY < lastScrollY && window.scrollY < 100) {  // 恢复到100px触发阈值
-                    // 向上滚动回到顶部，重新显示横幅文字
-                    bannerTextOverlay.style.opacity = '1';
-                    bannerTextOverlay.style.visibility = 'visible';
-                    bannerTextOverlay.style.transform = 'translateY(0) scale(1)';
-                    bannerTextOverlay.style.filter = 'blur(0)';  // 移除模糊效果
-                }
-                lastScrollY = window.scrollY;
-            });
-        });
-    </script>
+
     
     <!-- Water waves effect -->
     {siteConfig.banner.waves?.enable && (
@@ -822,14 +775,7 @@ const transparentClass = shouldEnableTransparency
 </Layout>
 
 <style>
-/* 添加滚动隐藏效果的CSS */
-.banner-text-overlay {
-    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.4s ease, filter 0.4s ease;
-}
 
-.banner-text-overlay.scrolling {
-    transition: none; /* 滚动时禁用过渡效果以提高性能 */
-}
 
 /* Banner text styles */
 .banner-title {
@@ -856,16 +802,6 @@ const transparentClass = shouldEnableTransparency
     }
 }
 
-@keyframes fadeOutUp {
-    from {
-        opacity: 1;
-        transform: translateY(0);
-    }
-    to {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-}
 
 /* 当没有 banner 时，主内容区域移到顶部 */
 body.no-banner-mode .absolute.w-full.z-30 {
