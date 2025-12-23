@@ -1,9 +1,13 @@
 ---
 import { Icon } from "astro-icon/components";
+import { Image } from "astro:assets";
 import { profileConfig, umamiConfig } from "../../config";
 import { url } from "../../utils/url-utils";
-import ImageWrapper from "../misc/ImageWrapper.astro";
 import TypewriterText from "../TypewriterText.astro";
+
+// 导入头像图片用于轮换显示
+import avatarImg from "../../assets/images/avatar.webp";
+import avatar1Img from "../../assets/images/avatar1.webp";
 
 // 解析 umami
 const umamiEnabled = umamiConfig.enabled || false;
@@ -23,7 +27,27 @@ const umamiBaseUrl = umamiConfig.baseUrl || "";
                   class="transition opacity-0 scale-90 group-hover:scale-100 group-hover:opacity-100 text-white text-5xl">
             </Icon>
         </div>
-        <ImageWrapper src={profileConfig.avatar || ""} alt="Profile Image of the Author" class="mx-auto lg:w-full h-full lg:mt-0 "></ImageWrapper>
+        <!-- 头像轮换容器：包含两张头像图片，每5秒切换一次 -->
+        <!-- aspect-square 确保容器保持1:1宽高比，避免absolute子元素导致高度塌陷 -->
+        <div id="avatar-carousel" class="overflow-hidden relative mx-auto lg:w-full aspect-square lg:mt-0">
+            <div class="transition absolute inset-0 dark:bg-black/10 bg-opacity-50 pointer-events-none z-10"></div>
+            <!-- 第一张头像图片 -->
+            <!-- duration-1000 设置1秒过渡时间，ease-in-out 实现平滑缓动效果 -->
+            <Image 
+                src={avatarImg} 
+                alt="Profile Image of the Author" 
+                class="avatar-image w-full h-full object-cover absolute inset-0 transition-opacity duration-1000 ease-in-out opacity-100"
+                loading="eager"
+            />
+            <!-- 第二张头像图片（初始隐藏） -->
+            <!-- duration-1000 设置1秒过渡时间，ease-in-out 实现平滑缓动效果 -->
+            <Image 
+                src={avatar1Img} 
+                alt="Profile Image of the Author" 
+                class="avatar-image w-full h-full object-cover absolute inset-0 transition-opacity duration-1000 ease-in-out opacity-0"
+                loading="eager"
+            />
+        </div>
     </a>
     <div class="px-2">
         <div class="font-bold text-xl text-center mb-1 dark:text-neutral-50 transition">{profileConfig.name}</div>
@@ -60,6 +84,74 @@ const umamiBaseUrl = umamiConfig.baseUrl || "";
         )}
     </div>
 </div>
+
+<!-- 头像轮换脚本：每5秒切换一次头像图片 -->
+<script>
+    /**
+     * 头像轮换功能
+     * - 获取容器内的所有头像图片
+     * - 每隔5秒切换显示下一张图片
+     * - 使用CSS opacity和ease-in-out缓动实现平滑过渡效果
+     */
+    
+    // 全局定时器ID，用于防止重复创建定时器
+    let avatarCarouselTimerId = null;
+    
+    function initAvatarCarousel() {
+        // 获取头像轮换容器
+        const carousel = document.getElementById('avatar-carousel');
+        if (!carousel) return;
+        
+        // 获取所有头像图片元素
+        const images = carousel.querySelectorAll('.avatar-image');
+        if (images.length < 2) return;
+        
+        // 清除已存在的定时器，避免重复创建导致轮换加速
+        if (avatarCarouselTimerId) {
+            clearInterval(avatarCarouselTimerId);
+            avatarCarouselTimerId = null;
+        }
+        
+        // 当前显示的图片索引
+        let currentIndex = 0;
+        
+        // 定时切换图片的间隔时间（5秒）
+        const ROTATION_INTERVAL = 5000;
+        
+        /**
+         * 切换到下一张头像图片
+         * - 隐藏当前图片（opacity: 0）
+         * - 显示下一张图片（opacity: 1）
+         * - 通过CSS transition实现1秒的平滑过渡
+         */
+        function switchAvatar() {
+            // 隐藏当前图片
+            images[currentIndex].classList.remove('opacity-100');
+            images[currentIndex].classList.add('opacity-0');
+            
+            // 计算下一张图片的索引（循环）
+            currentIndex = (currentIndex + 1) % images.length;
+            
+            // 显示下一张图片
+            images[currentIndex].classList.remove('opacity-0');
+            images[currentIndex].classList.add('opacity-100');
+        }
+        
+        // 启动定时器，每5秒切换一次，并保存定时器ID
+        avatarCarouselTimerId = setInterval(switchAvatar, ROTATION_INTERVAL);
+    }
+    
+    // 页面加载完成后初始化头像轮换
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initAvatarCarousel);
+    } else {
+        initAvatarCarousel();
+    }
+    
+    // 支持 Swup/ViewTransitions 等页面切换框架
+    document.addEventListener('swup:contentReplaced', initAvatarCarousel);
+    document.addEventListener('astro:page-load', initAvatarCarousel);
+</script>
 
 {umamiEnabled && (
     <script is:inline define:vars={{ umamiBaseUrl, umamiApiKey, umamiWebsiteId, umamiConfig }}>
