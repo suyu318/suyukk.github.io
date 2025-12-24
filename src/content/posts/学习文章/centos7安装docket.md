@@ -5,7 +5,7 @@ description: 在 CentOS 7 系统上安装 Docker 的详细步骤指南，包括�
 tags: [Docker, CentOS, 安装, Linux]
 category: 学习笔记
 licenseName: "Unlicensed"
-author: emn178
+author: 素鱼
 sourceLink: ""
 draft: false
 ---

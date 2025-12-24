@@ -8,6 +8,7 @@ password: "123456"
 alias: "encrypted-example"
 tags: ["测试", "加密"]
 category: "技术"
+draft: true
 ---
 
 这个博客模板使用 [Astro](https://astro.build/) 构建。对于本指南中未提及的内容，您可以在 [Astro 文档](https://docs.astro.build/)中找到答案。
