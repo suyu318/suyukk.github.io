@@ -15,7 +15,7 @@ export const WIDGET_COMPONENT_MAP = {
 	tags: "../components/widget/Tags.astro",
 	toc: "../components/widget/TOC.astro",
 	"music-player": "../components/widget/MusicPlayer.svelte",
-	pio: "../components/widget/Pio.astro", // 添加 Pio 组件映射
+
 	"site-stats": "../components/widget/SiteStats.astro", // 站点统计组件
 	calendar: "../components/widget/Calendar.astro", // 日历组件
 	custom: null, // 自定义组件需要在配置中指定路径
@@ -267,8 +267,7 @@ export class WidgetManager {
 	 * @param componentType 组件类型
 	 */
 	isSidebarComponent(componentType: WidgetComponentType): boolean {
-		// Pio 组件是全局组件，不在侧边栏中渲染
-		return componentType !== "pio";
+		return true;
 	}
 }
 
