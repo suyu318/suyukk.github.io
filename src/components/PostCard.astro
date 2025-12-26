@@ -63,35 +63,13 @@ const { remarkPluginFrontmatter } = await render(entry);
         </a>
 
         <!-- metadata (without tags) -->
-        <PostMetadata published={published} updated={updated} tags={tags} category={category || ''} hideTagsForMobile={true} hideUpdateDate={true} className="mb-4" showOnlyBasicMeta={true} words={remarkPluginFrontmatter.words} showWordCount={true}></PostMetadata>
+        <PostMetadata published={published} updated={updated} tags={tags} category={category || ''} hideTagsForMobile={true} hideUpdateDate={true} className="mb-4" showOnlyBasicMeta={true} words={remarkPluginFrontmatter.words} showWordCount={true} id={entry.id} showStats={true}></PostMetadata>
 
         <!-- description -->
         <div class:list={["transition text-75 mb-3.5 pr-4", {"line-clamp-2 md:line-clamp-1": !description}]}>
             { description || remarkPluginFrontmatter.excerpt }
         </div>
 
-        <!-- tags (moved to bottom) -->
-        <div class="flex flex-wrap gap-2 mt-2">
-            {tags && tags.length > 0 ? (
-                tags.map((tag) => (
-                    <a 
-                        href={getTagUrl(tag)} 
-                        class:list={[
-                            siteConfig.tagStyle?.useNewStyle 
-                                ? "link-lg transition text-50 text-xs font-medium px-2 py-1 rounded-lg hover:text-[var(--primary)] dark:hover:text-[var(--primary)] active:text-[var(--primary)] dark:active:text-[var(--primary)] group/tag whitespace-nowrap"
-                                : "btn-regular h-6 text-xs px-2 rounded-lg"
-                        ]}
-                        aria-label={`View all posts tagged with ${tag.trim()}`}
-                    >
-                        <span class="transition-transform group-hover/tag:translate-x-0.5">
-                            # {tag.trim()}
-                        </span>
-                    </a>
-                ))
-            ) : (
-                <span class="text-xs text-50">{i18n(I18nKey.noTags)}</span>
-            )}
-        </div>
     </div>
 
     {hasCover && <a href={url} aria-label={title}

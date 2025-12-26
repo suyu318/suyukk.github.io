@@ -120,7 +120,10 @@
 		const currentTimestamp = Date.now();
 		// 使用当前时间减去一天作为开始时间，以获取最近的数据
 		const startAt = currentTimestamp - 24 * 60 * 60 * 1000; // 24小时前
-		const statsUrl = `${baseUrl}/api/websites/${websiteId}/metrics?type=path&startAt=${startAt}&endAt=${currentTimestamp}&limit=100`;
+		
+		// 尝试使用不同的API端点来获取特定页面的数据
+		// 首先尝试使用metrics API获取路径数据
+		let statsUrl = `${baseUrl}/api/websites/${websiteId}/metrics?type=path&startAt=${startAt}&endAt=${currentTimestamp}&limit=100`;
 		
 		const res = await fetch(statsUrl, {
 			headers: {
@@ -150,10 +153,28 @@
 			}
 		}
 		
+		// 如果还是没找到，尝试使用pageviews API直接获取特定路径的数据
+		if (!pageStat) {
+			const pageviewsUrl = `${baseUrl}/api/websites/${websiteId}/pageviews?startAt=${startAt}&endAt=${currentTimestamp}&url=${encodeURIComponent(path)}`;
+			const pageviewsRes = await fetch(pageviewsUrl, {
+				headers: {
+					'x-umami-share-token': token,
+				},
+			});
+			
+			if (pageviewsRes.ok) {
+				const pageviewsData = await pageviewsRes.json();
+				return {
+					pageviews: pageviewsData.count || 0,
+					visitors: pageviewsData.visitors || 0
+				};
+			}
+		}
+		
 		if (pageStat) {
 			return {
-				pageviews: pageStat.y, // 访问次数
-				visitors: pageStat.visitors || pageStat.y // 如果没有单独的访客数，使用访问次数作为近似值
+				pageviews: pageStat.y || pageStat.count || 0, // 访问次数，不同API可能返回不同的字段名
+				visitors: pageStat.visitors || 0 // 访客数
 			};
 		} else {
 			// 如果没有找到匹配的页面，返回0值
