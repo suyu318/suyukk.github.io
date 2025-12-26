@@ -88,9 +88,12 @@ export async function getTagList(): Promise<Tag[]> {
 		});
 	});
 
-	// sort tags
+	// sort tags by count (descending)
 	const keys: string[] = Object.keys(countMap).sort((a, b) => {
-		return a.toLowerCase().localeCompare(b.toLowerCase());
+		if (countMap[b] !== countMap[a]) {
+			return countMap[b] - countMap[a]; // 按数量降序排列
+		}
+		return a.toLowerCase().localeCompare(b.toLowerCase()); // 数量相同时按字母顺序排列
 	});
 
 	return keys.map((key) => ({ name: key, count: countMap[key] }));

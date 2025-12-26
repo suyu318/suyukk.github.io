@@ -274,10 +274,15 @@ export const en: Translation = {
 	[Key.siteStatsCategoryCount]: "Categories",
 	[Key.siteStatsTagCount]: "Tags",
 	[Key.siteStatsTotalWords]: "Total Words",
-	[Key.siteStatsRunningDays]: "Running Time",
-	[Key.siteStatsLastUpdate]: "Last Activity",
-	[Key.siteStatsDaysAgo]: "{days} days ago",
-	[Key.siteStatsDays]: "{days} days",
+	[Key.siteStatsRunningDays]: "Running Days",
+	[Key.siteStatsLastUpdate]: "Last Update",
+	[Key.siteStatsDaysAgo]: "days ago",
+	[Key.siteStatsDays]: "days",
+
+	// Post Stats
+	[Key.postStatsTitle]: "Post Statistics",
+	[Key.postStatsViews]: "Views",
+	[Key.postStatsVisitors]: "Visitors",
 
 	// Calendar Component
 	[Key.calendarSunday]: "Sun",

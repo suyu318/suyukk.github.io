@@ -260,6 +260,11 @@ enum I18nKey {
 	siteStatsDaysAgo = "siteStatsDaysAgo",
 	siteStatsDays = "siteStatsDays",
 
+	// 文章统计
+	postStatsTitle = "postStatsTitle",
+	postStatsViews = "postStatsViews",
+	postStatsVisitors = "postStatsVisitors",
+
 	// 日历组件
 	calendarSunday = "calendarSunday",
 	calendarMonday = "calendarMonday",

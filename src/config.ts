@@ -646,7 +646,9 @@ export const widgetConfigs = {
 
 export const umamiConfig = {
 	enabled: true, // 是否显示Umami统计
-	apiKey: import.meta.env.UMAMI_API_KEY || "api_xxxxxxxx", // API密钥优先从环境变量读取，否则使用配置文件中的值
+	// 使用分享链接和网站ID替代API密钥方式
+	shareUrl: "https://suyukk.icu/share/fb2IUWLfRaULMs9f", // Umami分享链接
+	websiteId: "7310dd73-2d45-40d4-910a-428a58371852", // 网站ID
 	baseUrl: "https://suyukk.icu", // Umami Cloud API地址
 	scripts: `
 <script defer src="https://suyukk.icu/script.js" data-website-id="7310dd73-2d45-40d4-910a-428a58371852"></script>

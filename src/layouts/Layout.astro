@@ -344,6 +344,9 @@ if (siteConfig.font) {
 
 		<!-- Umami Analytics -->
 		{umamiEnabled && umamiScripts && <Fragment set:html={umamiScripts} />}
+		
+		<!-- Umami Share API -->
+		<script is:inline src="/js/umami-share.js"></script>
 	</head>
 	<body
 		class="min-h-screen"

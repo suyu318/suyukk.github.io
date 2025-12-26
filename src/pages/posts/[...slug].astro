@@ -27,6 +27,7 @@ import utc from "dayjs/plugin/utc";
 import { licenseConfig, permalinkConfig } from "src/config";
 import ImageWrapper from "../../components/misc/ImageWrapper.astro";
 import PostMetadata from "../../components/PostMeta.astro";
+import PostStats from "../../components/widget/PostStats.astro";
 import { profileConfig, siteConfig } from "../../config";
 import { formatDateToYYYYMMDD } from "../../utils/date-utils";
 
@@ -277,6 +278,9 @@ const jsonLd = {
 
     <!-- 评论 -->
     <Comment post={entry} />
+
+    {/* 文章统计 */}
+    <PostStats slug={entry.id} currentPath={Astro.url.pathname} />
 
     {siteConfig.showLastModified && (
         <>

@@ -1,0 +1,55 @@
+---
+import { Icon } from "astro-icon/components";
+import { umamiConfig } from "../../config";
+import I18nKey from "../../i18n/i18nKey";
+import { i18n } from "../../i18n/translation";
+
+interface Props {
+  slug: string; // 文章slug用于标识
+  currentPath: string; // 当前页面路径
+  class?: string;
+  style?: string;
+}
+
+const { slug, currentPath, class: className, style } = Astro.props;
+
+const showPostStats = umamiConfig.enabled && umamiConfig.shareUrl && umamiConfig.websiteId;
+---
+
+{showPostStats && (
+  <div class={`card-base p-6 mb-4 ${className || ''}`} style={style}>
+    <div class="text-center text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+      {i18n(I18nKey.postStatsTitle) || "文章统计"}
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <div class="text-center">
+        <div class="text-lg font-bold text-blue-600 dark:text-blue-400" id={`post-pageviews-${slug.replace(/\//g, '-')}`}>-</div>
+        <div class="text-xs text-gray-500 dark:text-gray-400">{i18n(I18nKey.postStatsViews) || "浏览量"}</div>
+      </div>
+      <div class="text-center">
+        <div class="text-lg font-bold text-green-600 dark:text-green-400" id={`post-visitors-${slug.replace(/\//g, '-')}`}>-</div>
+        <div class="text-xs text-gray-500 dark:text-gray-400">{i18n(I18nKey.postStatsVisitors) || "访客数"}</div>
+      </div>
+    </div>
+  </div>
+)}
+
+<script is:inline define:vars={{ currentPath, umamiConfig }}>
+  // 如果启用了Umami，获取文章统计数据
+  if (typeof window !== 'undefined' && window.getUmamiPageStatsFromShare) {
+    window.getUmamiPageStatsFromShare(
+      umamiConfig.shareUrl,
+      umamiConfig.websiteId,
+      currentPath
+    )
+    .then(stats => {
+      document.getElementById(`post-pageviews-${slug.replace(/\//g, '-')}`).textContent = stats.pageviews || '0';
+      document.getElementById(`post-visitors-${slug.replace(/\//g, '-')}`).textContent = stats.visitors || '0';
+    })
+    .catch(error => {
+      console.error('获取文章统计数据失败:', error);
+      document.getElementById(`post-pageviews-${slug.replace(/\//g, '-')}`).textContent = 'N/A';
+      document.getElementById(`post-visitors-${slug.replace(/\//g, '-')}`).textContent = 'N/A';
+    });
+  }
+</script>

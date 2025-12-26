@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Umami Share Test</title>
+</head>
+<body>
+    <h1>Umami Share API Test</h1>
+    <button onclick="testUmamiShare()">测试Umami分享API</button>
+    <div id="result"></div>
+
+    <script src="./js/umami-share.js"></script>
+    <script>
+        async function testUmamiShare() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '正在测试...';
+            
+            try {
+                // 使用提供的分享链接和网站ID
+                const shareUrl = 'https://suyukk.icu/share/fb2IUWLfRaULMs9f';
+                const websiteId = '7310dd73-2d45-40d4-910a-428a58371852';
+                
+                // 首先获取token
+                resultDiv.innerHTML += '<br>正在获取token...';
+                const token = await window.getUmamiShareToken(shareUrl);
+                resultDiv.innerHTML += `<br>获取到token: ${token.substring(0, 20)}...`;
+                
+                // 然后获取统计数据
+                resultDiv.innerHTML += '<br>正在获取统计数据...';
+                const stats = await window.getUmamiWebsiteStatsFromShare(shareUrl, websiteId);
+                resultDiv.innerHTML += `<br>获取到统计数据: ${JSON.stringify(stats, null, 2)}`;
+                
+            } catch (error) {
+                resultDiv.innerHTML += `<br>错误: ${error.message}`;
+                console.error('Umami API Error:', error);
+            }
+        }
+    </script>
+</body>
+</html>

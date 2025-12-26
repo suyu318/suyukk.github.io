@@ -273,16 +273,21 @@ export const ja: Translation = {
 
 	// サイト統計
 	[Key.siteStats]: "サイト統計",
-	[Key.siteStatsPostCount]: "記事数",
-	[Key.siteStatsCategoryCount]: "カテゴリー数",
+	[Key.siteStatsPostCount]: "投稿数",
+	[Key.siteStatsCategoryCount]: "カテゴリ数",
 	[Key.siteStatsTagCount]: "タグ数",
-	[Key.siteStatsTotalWords]: "総字数",
-	[Key.siteStatsRunningDays]: "運用日数",
+	[Key.siteStatsTotalWords]: "総文字数",
+	[Key.siteStatsRunningDays]: "運営日数",
 	[Key.siteStatsLastUpdate]: "最終更新",
-	[Key.siteStatsDaysAgo]: "{days}日前",
-	[Key.siteStatsDays]: "{days}日",
+	[Key.siteStatsDaysAgo]: "日前",
+	[Key.siteStatsDays]: "日",
 
-	// カレンダーコンポーネント
+	// 投稿統計
+	[Key.postStatsTitle]: "投稿統計",
+	[Key.postStatsViews]: "閲覧数",
+	[Key.postStatsVisitors]: "訪問者数",
+
+	// カレンダー部品
 	[Key.calendarSunday]: "日",
 	[Key.calendarMonday]: "月",
 	[Key.calendarTuesday]: "火",
