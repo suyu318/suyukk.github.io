@@ -80,8 +80,7 @@
 		// 构建stats API URL
 		const baseUrl = shareUrl.replace(/\/share\/.*$/, '');
 		const currentTimestamp = Date.now();
-		// 使用当前时间减去一天作为开始时间，以获取最近的数据
-		const startAt = currentTimestamp - 24 * 60 * 60 * 1000; // 24小时前
+		const startAt = 0;
 		const statsUrl = `${baseUrl}/api/websites/${websiteId}/stats?startAt=${startAt}&endAt=${currentTimestamp}&unit=hour&timezone=Asia%2FShanghai`;
 		
 		const res = await fetch(statsUrl, {
@@ -118,14 +117,73 @@
 		// 构建stats API URL，用于获取特定页面的数据
 		const baseUrl = shareUrl.replace(/\/share\/.*$/, '');
 		const currentTimestamp = Date.now();
-		// 使用当前时间减去一天作为开始时间，以获取最近的数据
-		const startAt = currentTimestamp - 24 * 60 * 60 * 1000; // 24小时前
+		const startAt = 0;
+
+		// 优先使用 stats 接口并按 url 过滤，能拿到 pageviews / visitors
+		// 不同 Umami 版本对 url 的含义可能不同（pathname vs 完整URL），所以两种都尝试
+		const urlCandidates = [path];
+		try {
+			if (typeof window !== 'undefined' && window.location && window.location.origin) {
+				urlCandidates.push(`${window.location.origin}${path}`);
+			}
+		} catch {
+			// noop
+		}
+
+		async function fetchStatsByUrl(urlValue) {
+			const statsUrl = `${baseUrl}/api/websites/${websiteId}/stats?startAt=${startAt}&endAt=${currentTimestamp}&url=${encodeURIComponent(urlValue)}`;
+			const statsRes = await fetch(statsUrl, {
+				headers: {
+					'x-umami-share-token': token,
+				},
+			});
+			if (!statsRes.ok) return null;
+			return await statsRes.json();
+		}
+
+		// 获取不带过滤的全站 stats，用于判断后端是否忽略 url 参数
+		async function fetchUnfilteredStats() {
+			const unfilteredUrl = `${baseUrl}/api/websites/${websiteId}/stats?startAt=${startAt}&endAt=${currentTimestamp}`;
+			const res = await fetch(unfilteredUrl, {
+				headers: {
+					'x-umami-share-token': token,
+				},
+			});
+			if (!res.ok) return null;
+			return await res.json();
+		}
+
+		let unfilteredStats = null;
+		for (const urlValue of urlCandidates) {
+			const stats = await fetchStatsByUrl(urlValue);
+			if (!stats) continue;
+
+			// 某些 Umami 版本会忽略 url 过滤，直接返回全站 stats，导致每篇文章都显示同一组值
+			if (path !== '/') {
+				if (!unfilteredStats) {
+					unfilteredStats = await fetchUnfilteredStats();
+				}
+				if (
+					unfilteredStats &&
+					(stats.pageviews || 0) === (unfilteredStats.pageviews || 0) &&
+					(stats.visitors || 0) === (unfilteredStats.visitors || 0)
+				) {
+					// 看起来是被忽略了过滤条件，继续尝试下一个 urlCandidate
+					continue;
+				}
+			}
+
+			return {
+				pageviews: stats.pageviews || 0,
+				visitors: typeof stats.visitors === "number" ? stats.visitors : null,
+			};
+		}
 		
 		// 尝试使用不同的API端点来获取特定页面的数据
 		// 首先尝试使用metrics API获取路径数据
-		let statsUrl = `${baseUrl}/api/websites/${websiteId}/metrics?type=path&startAt=${startAt}&endAt=${currentTimestamp}&limit=100`;
+		let metricsUrl = `${baseUrl}/api/websites/${websiteId}/metrics?type=path&startAt=${startAt}&endAt=${currentTimestamp}&limit=100`;
 		
-		const res = await fetch(statsUrl, {
+		const res = await fetch(metricsUrl, {
 			headers: {
 				'x-umami-share-token': token,
 			},
@@ -153,34 +211,37 @@
 			}
 		}
 		
-		// 如果还是没找到，尝试使用pageviews API直接获取特定路径的数据
+		// 如果还是没找到，尝试使用 pageviews API 直接获取特定路径的数据
 		if (!pageStat) {
-			const pageviewsUrl = `${baseUrl}/api/websites/${websiteId}/pageviews?startAt=${startAt}&endAt=${currentTimestamp}&url=${encodeURIComponent(path)}`;
-			const pageviewsRes = await fetch(pageviewsUrl, {
-				headers: {
-					'x-umami-share-token': token,
-				},
-			});
-			
-			if (pageviewsRes.ok) {
-				const pageviewsData = await pageviewsRes.json();
-				return {
-					pageviews: pageviewsData.count || 0,
-					visitors: pageviewsData.visitors || 0
-				};
+			for (const urlValue of urlCandidates) {
+				const pageviewsUrl = `${baseUrl}/api/websites/${websiteId}/pageviews?startAt=${startAt}&endAt=${currentTimestamp}&url=${encodeURIComponent(urlValue)}`;
+				const pageviewsRes = await fetch(pageviewsUrl, {
+					headers: {
+						'x-umami-share-token': token,
+					},
+				});
+				
+				if (pageviewsRes.ok) {
+					const pageviewsData = await pageviewsRes.json();
+					return {
+						pageviews: pageviewsData.count || 0,
+						// share 权限/不同版本下经常拿不到 per-page visitors，避免误用全站 visitors
+						visitors: typeof pageviewsData.visitors === "number" ? pageviewsData.visitors : null
+					};
+				}
 			}
 		}
 		
 		if (pageStat) {
 			return {
 				pageviews: pageStat.y || pageStat.count || 0, // 访问次数，不同API可能返回不同的字段名
-				visitors: pageStat.visitors || 0 // 访客数
+				visitors: typeof pageStat.visitors === "number" ? pageStat.visitors : null // 访客数
 			};
 		} else {
 			// 如果没有找到匹配的页面，返回0值
 			return {
 				pageviews: 0,
-				visitors: 0
+				visitors: null
 			};
 		}
 	}

@@ -651,6 +651,6 @@ export const umamiConfig = {
 	websiteId: "7310dd73-2d45-40d4-910a-428a58371852", // 网站ID
 	baseUrl: "https://suyukk.icu", // Umami Cloud API地址
 	scripts: `
-<script defer src="https://suyukk.icu/script.js" data-website-id="7310dd73-2d45-40d4-910a-428a58371852"></script>
+<script defer src="https://suyukk.icu/script.js" data-website-id="7310dd73-2d45-40d4-910a-428a58371852" data-auto-track="false"></script>
   `.trim(), // 上面填你要插入的Script,不用再去Layout中插入
 } as const;

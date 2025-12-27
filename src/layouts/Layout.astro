@@ -344,6 +344,91 @@ if (siteConfig.font) {
 
 		<!-- Umami Analytics -->
 		{umamiEnabled && umamiScripts && <Fragment set:html={umamiScripts} />}
+		{umamiEnabled && (
+			<script is:inline>
+				(function () {
+					function stripHash() {
+						try {
+							if (!window.location.hash) return;
+							history.replaceState(
+								history.state,
+								document.title,
+								window.location.pathname + window.location.search,
+							);
+						} catch {
+							// noop
+						}
+					}
+
+					function preventHashNavigation(e) {
+						try {
+							const target = e.target;
+							if (!(target instanceof Element)) return;
+							const a = target.closest('a');
+							if (!a) return;
+							const rawHref = a.getAttribute('href');
+							if (!rawHref) return;
+							// Only handle in-page anchors (#id) and same-page /#id
+							if (!rawHref.startsWith('#') && !rawHref.startsWith('/#')) return;
+							const hash = rawHref.startsWith('#') ? rawHref : rawHref.slice(1);
+							const id = decodeURIComponent(hash.replace(/^#/, '')).trim();
+							if (!id) return;
+
+							const el = document.getElementById(id) || document.querySelector(`[name="${CSS.escape(id)}"]`);
+							if (!el) return;
+
+							e.preventDefault();
+							el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+							// Keep focus for accessibility (non-intrusive)
+							try {
+								if (el instanceof HTMLElement) {
+									el.focus({ preventScroll: true });
+								}
+							} catch {
+								// noop
+							}
+
+							// Ensure address bar stays clean
+							stripHash();
+						} catch {
+							// noop
+						}
+					}
+
+					function track() {
+						try {
+							stripHash();
+							const cleanUrl = window.location.pathname + window.location.search;
+							// Umami exposes window.umami with trackView (v1) or track (v2+)
+							const u = window.umami;
+							if (!u) return;
+							if (typeof u.trackView === "function") {
+								u.trackView(cleanUrl);
+								return;
+							}
+							if (typeof u.track === "function") {
+								u.track();
+							}
+						} catch {
+							// noop
+						}
+					}
+
+					// Initial page load (in case defer script loads after navigation)
+					window.addEventListener("load", track, { once: true });
+
+					// Astro client-side navigation
+					document.addEventListener("astro:page-load", track);
+
+					// Swup navigation (if enabled)
+					document.addEventListener("swup:contentReplaced", track);
+
+					// Remove hash from address bar after in-page anchor navigation
+					window.addEventListener("hashchange", stripHash);
+					document.addEventListener('click', preventHashNavigation, true);
+				})();
+			</script>
+		)}
 		
 		<!-- Umami Share API -->
 		<script is:inline src="/js/umami-share.js"></script>

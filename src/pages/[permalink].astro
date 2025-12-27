@@ -191,6 +191,7 @@ const jsonLd = {
                     tags={entry.data.tags}
                     category={entry.data.category || undefined}
                     id={entry.id}
+                    currentPath={Astro.url.pathname}
                 />
                 {
                     (!entry.data.image || (entry.data.image && !siteConfig.showCoverInContent)) && (

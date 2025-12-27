@@ -331,7 +331,7 @@ class TableOfContents extends HTMLElement {
                     <div class="transition w-5 h-5 shrink-0 rounded-lg text-xs flex items-center justify-center font-bold ${depthClass} ${heading.depth === minDepth ? 'bg-[var(--toc-badge-bg)] text-[var(--btn-content)]' : ''}">
                         ${badgeContent}
                     </div>
-                    <div class="transition text-sm ${heading.depth <= minDepth + 1 ? 'text-50' : 'text-30'}">${heading.text}</div>
+                    <div title="${heading.text.replace(/\"/g, '&quot;')}" class="transition text-sm overflow-hidden text-ellipsis whitespace-nowrap flex-1 min-w-0 ${heading.depth <= minDepth + 1 ? 'text-50' : 'text-30'}">${heading.text}</div>
                 </a>`;
             }).join('');
         this.innerHTML = tocHTML + '<div id="active-indicator" style="opacity: 0" class="-z-10 absolute bg-[var(--toc-btn-hover)] left-0 right-0 rounded-xl transition-all group-hover:bg-transparent border-2 border-[var(--toc-btn-hover)] group-hover:border-[var(--toc-btn-active)] border-dashed"></div>';

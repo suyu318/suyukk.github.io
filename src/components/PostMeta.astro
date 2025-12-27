@@ -22,6 +22,7 @@ export interface Props {
 	isHome?: boolean;
 	className?: string;
 	id?: string;
+	currentPath?: string;
 	showOnlyBasicMeta?: boolean; // 新增属性，控制是否只显示基本元数据
 	words?: number; // 字数统计
 	minutes?: number; // 阅读时间（分钟）
@@ -39,6 +40,7 @@ const {
 	isHome,
 	className = "",
 	id,
+	currentPath,
 	showOnlyBasicMeta = false, // 默认为false，保持原有行为
 	words,
 	// minutes,
@@ -138,7 +140,7 @@ const {
 
 <!-- 在启用umami且有slug时加载脚本 -->
 {umamiEnabled && id && showStats && (
-    <script is:inline define:vars={{ id, umamiBaseUrl, umamiWebsiteId, umamiConfig }}>
+    <script is:inline define:vars={{ id, currentPath, umamiBaseUrl, umamiWebsiteId, umamiConfig }}>
         // 获取访问量和访客数统计
         async function fetchPageStats(isRetry = false) {
             // @ts-ignore
@@ -146,7 +148,9 @@ const {
             
             try {
                 // 构造文章页面的URL路径
-                const pageUrl = `/posts/${id}/`;
+                const pageUrl = (currentPath && typeof currentPath === 'string' && currentPath.length > 0)
+					? currentPath
+					: `/posts/${id}/`;
                 
                 // 使用分享链接方式获取统计
                 if (umamiConfig.shareUrl) {
@@ -154,7 +158,7 @@ const {
                     
                     // 从返回的数据中提取页面浏览量和访客数
                     const pageViews = stats.pageviews || 0;
-                    const visitors = stats.visitors || 0;
+                    const visitors = typeof stats.visitors === 'number' ? stats.visitors : null;
                     
                     // 更新页面浏览量显示
                     const viewsElement = document.getElementById(`page-views-display-${id.replace(/\//g, '-')}`);
@@ -165,7 +169,7 @@ const {
                     // 更新访客数显示
                     const visitorsElement = document.getElementById(`visitors-display-${id.replace(/\//g, '-')}`);
                     if (visitorsElement) {
-                        visitorsElement.textContent = visitors.toString();
+						visitorsElement.textContent = visitors === null ? '-' : visitors.toString();
                     }
                 } else {
                     // 旧方式：使用API密钥获取统计（如果需要的话）
