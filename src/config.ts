@@ -503,7 +503,7 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 			// 组件显示顺序
 			order: 5,
 			// 组件位置："sticky" 表示粘性定位
-			position: "top",
+			position: "sticky",
 			// 所在侧边栏
 			sidebar: "left",
 			// CSS 类名
@@ -540,7 +540,7 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 			// 组件显示顺序
 			order: 6,
 			// 组件位置
-			position: "top",
+			position: "sticky",
 			// 所在侧边栏
 			sidebar: "right",
 			// CSS 类名
@@ -611,28 +611,6 @@ export const sakuraConfig: SakuraConfig = {
 	zIndex: 100, // 层级，确保樱花在合适的层级显示
 };
 
-// Pio 看板娘配置
-export const pioConfig: import("./types/config").PioConfig = {
-	enable: false, // 启用看板娘
-	models: ["/pio/models/pio/model.json"], // 默认模型路径
-	position: "left", // 默认位置在右侧
-	width: 280, // 默认宽度
-	height: 250, // 默认高度
-	mode: "draggable", // 默认为可拖拽模式
-	hiddenOnMobile: true, // 默认在移动设备上隐藏
-	dialog: {
-		welcome: "Welcome to suyukk Website!", // 欢迎词
-		touch: [
-			"善用搜索功能和标签功能",
-			"右下角可以播放音乐哦",
-		], // 触摸提示
-		home: "点我可以回到首页哦", // 首页提示
-		skin: ["想看我的新衣吗？", "新衣 looks great~"], // 换装提示
-		close: "QWQ下次见~", // 关闭提示
-		link: "https://github.com/matsuzaka-yuki/Mizuki", // 关于链接
-	},
-};
-
 // 导出所有配置的统一接口
 export const widgetConfigs = {
 	profile: profileConfig,
@@ -641,7 +619,6 @@ export const widgetConfigs = {
 	layout: sidebarLayoutConfig,
 	sakura: sakuraConfig,
 	fullscreenWallpaper: fullscreenWallpaperConfig,
-	pio: pioConfig, // 添加 pio 配置
 } as const;
 
 export const umamiConfig = {
