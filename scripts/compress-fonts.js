@@ -843,7 +843,11 @@ async function compressFonts() {
 		console.log(`Found ${fonts.length} font configs to compress`);
 
 		// 检查 dist 目录是否存在
-		const distDir = path.join(__dirname, "../dist");
+		// 引入 Vercel 适配器后，静态产物位于 dist/client；未使用适配器时为 dist
+		const clientDir = path.join(__dirname, "../dist/client");
+		const distDir = fs.existsSync(clientDir)
+			? clientDir
+			: path.join(__dirname, "../dist");
 		if (!fs.existsSync(distDir)) {
 			console.log(
 				"⚠ dist directory does not exist, please run astro build first",

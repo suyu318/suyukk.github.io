@@ -7,10 +7,11 @@
 		"init-content": "node scripts/init-content-repo.js",
 		"predev": "node scripts/sync-content.js || true",
 		"prebuild": "node scripts/sync-content.js || true",
-		"dev": "astro dev",
+		"dev": "node scripts/build-kb.mjs && astro dev",
 		"start": "astro dev",
 		"check": "astro check",
-		"build": "astro build && pagefind --site dist && node scripts/compress-fonts.js",
+		"build": "node scripts/build-kb.mjs && astro build && pagefind --site dist/client && node scripts/compress-fonts.js && node scripts/sync-vercel-static.mjs",
+		"kb": "node scripts/build-kb.mjs",
 		"submit": "node scripts/indexnow-submit.js",
 		"preview": "astro preview",
 		"astro": "astro",
@@ -28,6 +29,7 @@
 		"@astrojs/sitemap": "^3.6.0",
 		"@astrojs/svelte": "7.2.2",
 		"@astrojs/tailwind": "^6.0.2",
+		"@astrojs/vercel": "^8.2.11",
 		"@expressive-code/core": "^0.41.3",
 		"@expressive-code/plugin-collapsible-sections": "^0.41.3",
 		"@expressive-code/plugin-line-numbers": "^0.41.3",
@@ -90,8 +92,8 @@
 	},
 	"packageManager": "pnpm@10.22.0",
 	"pnpm": {
-    "overrides": {
-      "@emmetio/css-parser": "https://codeload.github.com/ramya-rao-a/css-parser/tar.gz/370c480ac103bd17c7bcfb34bf5d577dc40d3660"
-    }
-  }
+		"overrides": {
+			"@emmetio/css-parser": "https://codeload.github.com/ramya-rao-a/css-parser/tar.gz/370c480ac103bd17c7bcfb34bf5d577dc40d3660"
+		}
+	}
 }

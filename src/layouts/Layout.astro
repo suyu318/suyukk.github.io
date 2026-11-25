@@ -1,8 +1,10 @@
 ---
 import ConfigCarrier from "@components/ConfigCarrier.astro";
+import ChatWidget from "@components/widget/ChatWidget.svelte";
 import MusicPlayer from "@components/widget/MusicPlayer.svelte";
 
 import {
+	chatWidgetConfig,
 	musicPlayerConfig,
 	profileConfig,
 	siteConfig,
@@ -456,6 +458,9 @@ if (siteConfig.font) {
 
 		<!-- Music Player - 仅在启用时加载 -->
 		{musicPlayerConfig.enable && <MusicPlayer client:idle />}
+
+		<!-- 站内 AI 助手 - 左下角悬浮球 -->
+		{chatWidgetConfig.enable && <ChatWidget client:idle />}
 
 		<!-- increase the page height during page transition to prevent the scrolling animation from jumping -->
 		<div id="page-height-extend" class="hidden h-[300vh]"></div>

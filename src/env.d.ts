@@ -3,6 +3,9 @@
 
 interface ImportMetaEnv {
 	readonly UMAMI_API_KEY?: string;
+	readonly LLM_API_KEY?: string;
+	readonly LLM_BASE_URL?: string;
+	readonly LLM_MODEL?: string;
 }
 
 interface ImportMeta {

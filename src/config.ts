@@ -1,5 +1,6 @@
 import type {
 	AnnouncementConfig,
+	ChatWidgetConfig,
 	CommentConfig,
 	ExpressiveCodeConfig,
 	FooterConfig,
@@ -421,6 +422,23 @@ export const musicPlayerConfig: MusicPlayerConfig = {
 	id: "7681126341", // 歌单ID
 	server: "netease", // 音乐源服务器。有的meting的api源支持更多平台,一般来说,netease=网易云音乐, tencent=QQ音乐, kugou=酷狗音乐, xiami=虾米音乐, baidu=百度音乐
 	type: "playlist", // 播单类型
+};
+
+export const chatWidgetConfig: ChatWidgetConfig = {
+	enable: true,
+	title: "问问小素",
+	subtitle: "基于站内文章回答",
+	welcome:
+		"我是这个博客的站内助手，只用这里写过的内容回答。想了解什么，直接问我就好。",
+	suggestions: [
+		"这个博客都写了些什么？",
+		"Docker 私有仓库怎么搭？",
+		"人脸情绪识别的环境怎么配？",
+	],
+	apiPath: "/api/chat/",
+	model: "deepseek-chat",
+	maxContextChunks: 5,
+	showSources: true,
 };
 
 export const footerConfig: FooterConfig = {

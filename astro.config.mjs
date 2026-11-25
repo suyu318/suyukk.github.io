@@ -1,6 +1,7 @@
 import sitemap from "@astrojs/sitemap";
 import svelte from "@astrojs/svelte";
 import tailwind from "@astrojs/tailwind";
+import vercel from "@astrojs/vercel";
 import { pluginCollapsibleSections } from "@expressive-code/plugin-collapsible-sections";
 import { pluginLineNumbers } from "@expressive-code/plugin-line-numbers";
 import swup from "@swup/astro";
@@ -31,6 +32,7 @@ export default defineConfig({
 
 	base: "/",
 	trailingSlash: "always",
+	adapter: vercel({ maxDuration: 60 }),
 	integrations: [
 		tailwind({
 			nesting: true,

@@ -4,6 +4,9 @@ dist/
 # generated types
 .astro/
 
+# generated knowledge base index
+src/generated/
+
 # dependencies
 node_modules/
 

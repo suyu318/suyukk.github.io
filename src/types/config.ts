@@ -315,6 +315,18 @@ export type MusicPlayerConfig = {
 	type: string; // 音乐类型
 };
 
+export type ChatWidgetConfig = {
+	enable: boolean; // 是否启用左下角站内对话悬浮球
+	title: string; // 对话框标题
+	subtitle: string; // 对话框副标题
+	welcome: string; // 首次打开时的欢迎语
+	suggestions: string[]; // 空白状态下的推荐问题
+	apiPath: string; // 对话接口地址
+	model: string; // 默认模型（可被环境变量 LLM_MODEL 覆盖）
+	maxContextChunks: number; // 单次检索注入的最大片段数
+	showSources: boolean; // 是否在回答下方展示引用文章
+};
+
 export type FooterConfig = {
 	enable: boolean; // 是否启用Footer HTML注入功能
 	customHtml?: string; // 自定义HTML内容，用于添加备案号等信息

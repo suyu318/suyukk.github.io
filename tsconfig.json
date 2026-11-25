@@ -8,6 +8,7 @@
 		"baseUrl": ".",
 		"strictNullChecks": true,
 		"allowJs": false,
+		"resolveJsonModule": true,
 		"declaration": true,
 		"plugins": [
 			{

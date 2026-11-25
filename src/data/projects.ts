@@ -20,6 +20,27 @@ export interface Project {
 
 export const projectsData: Project[] = [
 	{
+		id: "suyu-blog",
+		title: "素鱼博客",
+		description:
+			"基于 Astro 静态站点框架搭建的个人技术博客，在 Mizuki 开源主题基础上二次开发，重点落地三块工程能力 —— 基于 Umami 的文章浏览量统计（首页聚合 + 详情页展示）、文章 AES 加密、仓耳今楷字体子集化；纯静态输出，Vercel 自动部署。",
+		image: "",
+		category: "web",
+		techStack: [
+			"Astro",
+			"TypeScript",
+			"Svelte",
+			"Tailwind CSS",
+			"Pagefind",
+		],
+		status: "in-progress",
+		liveDemo: "https://www.suyukk.xyz/",
+		visitUrl: "https://www.suyukk.xyz/",
+		startDate: "2025-12-23",
+		featured: true,
+		tags: ["博客", "个人站", "Astro"],
+	},
+	{
 		id: "mizuki-blog",
 		title: "Mizuki Blog Theme",
 		description:
