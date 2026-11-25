@@ -31,6 +31,25 @@ function walk(dir) {
 	return out;
 }
 
+/**
+ * 与 Astro 的 entry.id 保持一致：逐段 slug 化
+ * 规则来自 github-slugger：转小写、空格转连字符、去掉标点，保留中文
+ */
+function slugifySegment(segment) {
+	return segment
+		.toLowerCase()
+		.replace(/\s+/g, "-")
+		.replace(/[^\p{L}\p{N}\-_]/gu, "");
+}
+
+function toSlug(relativePath) {
+	return relativePath
+		.split("/")
+		.map(slugifySegment)
+		.join("/")
+		.replace(/\/index$/, "");
+}
+
 function parseFrontmatter(raw) {
 	const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?/);
 	if (!match) return { data: {}, body: raw };
@@ -153,7 +172,7 @@ function main() {
 		}
 
 		const rel = path.relative(POSTS_DIR, file).split(path.sep).join("/");
-		const slug = rel.replace(/\.mdx?$/, "");
+		const slug = toSlug(rel.replace(/\.mdx?$/, ""));
 		const url = `/posts/${slug}/`;
 		const meta = {
 			slug,
