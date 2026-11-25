@@ -217,9 +217,14 @@ export const POST: APIRoute = async ({ request }) => {
 	}
 
 	const encoder = new TextEncoder();
+	// 引用来源要更严格：只展示高置信片段，避免把弱相关文章也列出来
+	const sourceFloor = hits.length
+		? Math.max(2.2, hits[0].score * 0.45)
+		: Number.POSITIVE_INFINITY;
 	const sources: { title: string; heading: string; url: string }[] = [];
 	const seenUrls = new Set<string>();
 	for (const hit of hits) {
+		if (hit.score < sourceFloor) continue;
 		if (seenUrls.has(hit.url)) continue;
 		seenUrls.add(hit.url);
 		sources.push({ title: hit.title, heading: hit.heading, url: hit.url });

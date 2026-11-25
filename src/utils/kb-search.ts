@@ -41,12 +41,17 @@ export function tokenize(input: string): string[] {
 
 type Doc = { chunk: KbChunk; tf: Map<string, number>; len: number };
 
+// 提问里的高频虚词会稀释检索信号，先剔除
+const FILLERS =
+	/(这个|那个|哪些|什么|怎么|怎样|如何|请问|一下|相关|内容|博客|文章|写了|可以|帮我|告诉|介绍一下|介绍)/g;
+
 export function search(
 	chunks: KbChunk[],
 	query: string,
 	limit = 5,
 ): KbHit[] {
-	const qTokens = [...new Set(tokenize(query))];
+	const cleaned = query.replace(FILLERS, " ").replace(/\s+/g, " ").trim();
+	const qTokens = [...new Set(tokenize(cleaned || query))];
 	if (qTokens.length === 0 || chunks.length === 0) return [];
 
 	const docs: Doc[] = chunks.map((chunk) => {
@@ -85,20 +90,22 @@ export function search(
 		}
 		if (score <= 0) continue;
 
-		const headTokens = new Set(
-			tokenize(`${doc.chunk.title} ${doc.chunk.heading}`),
-		);
-		let boost = 1;
+		// 标题命中是强信号，尤其对单词查询（如 “Docker”）
+		const titleTokens = new Set(tokenize(doc.chunk.title));
+		let titleMatched = 0;
 		for (const token of qTokens) {
-			if (headTokens.has(token)) boost += 0.08;
+			if (titleTokens.has(token)) titleMatched += 1;
 		}
-		scored.push({ ...doc.chunk, score: score * boost });
+		const titleBoost = 1 + (0.8 * titleMatched) / qTokens.length;
+
+		scored.push({ ...doc.chunk, score: score * titleBoost });
 	}
 
 	scored.sort((a, b) => b.score - a.score);
 
 	const topScore = scored[0]?.score ?? 0;
-	const floor = Math.max(2.5, topScore * 0.28);
+	// 召回阶段放宽：短查询（如只问 “Docker”）分数天然偏低，不能因此丢光
+	const floor = Math.max(1.2, topScore * 0.15);
 
 	const perPost = new Map<string, number>();
 	const picked: KbHit[] = [];
